@@ -1,7 +1,7 @@
-function activeChannel = McIntyre2002SlowK()
+function activeChannel = JPN_SlowKv11()
 
 activeChannel.channames =                           'Slow K+ (McIntyre 2002 - adapted)';
-activeChannel.cond.value.ref =                      0.8;
+activeChannel.cond.value.ref =                      0;%0.8;
 activeChannel.cond.value.vec =                      [];
 activeChannel.cond.units =                          {2, 'mS', 'mm', [1, -2]};
 activeChannel.erev.value =                          -90;
