@@ -306,7 +306,7 @@ fprintf('running...'); tic;
 % --------------------------------------------------- MAIN ------------------------------------------------------ %
 
 for i = 1:T
-    i
+    i;
     
     rateTableIdx = round(1 + rateTableSize * ((V2(2:end-1, 2) - Vbounds(1))/(Vbounds(2) - Vbounds(1))));
     if V2(2, 2) > Vbounds(2)
