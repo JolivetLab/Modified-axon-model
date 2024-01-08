@@ -1,10 +1,12 @@
 function par = parameters_corticalaxon
 
+
+
 %% simulation
 
 % VALUES
 par.sim.dt.value =                                                      0.1;
-par.sim.tmax.value =                                                    1;
+par.sim.tmax.value =                                                    5;
 par.sim.temp =                                                          21;
 
 par.stim.amp.value =                                                    0.5;
@@ -120,26 +122,26 @@ par.elec.pas.vrest.value.vec =                                          par.elec
 par.elec.pas.vrest.units =                                              {1, 'mV', 1};
 
 par.node.elec.pas.cap.value.vec =                                       par.node.elec.pas.cap.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
-par.node.elec.pas.cap.units =                                           {2,'uF','cm',[1 -2]};
+par.node.elec.pas.cap.units =                                           {2,'uF','cm',[1, -2]};
 par.node.elec.pas.cond.value.vec =                                      par.node.elec.pas.cond.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
-par.node.elec.pas.cond.units =                                          {2,'mS','cm',[1 -2]};
+par.node.elec.pas.cond.units =                                          {2,'mS','cm',[1, -2]};
 
 par.node.elec.pas.axres.value.vec =                                     par.node.elec.pas.axres.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
-par.node.elec.pas.axres.units =                                         {2,' O','m',[1 1]};
+par.node.elec.pas.axres.units =                                         {2,' O',' m',[1, 1]};
 
 par.intn.elec.pas.cap.value.vec =                                       par.intn.elec.pas.cap.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.intn.elec.pas.cap.units =                                           {2,'uF','cm',[1 -2]};
+par.intn.elec.pas.cap.units =                                           {2,'uF','cm',[1, -2]};
 par.intn.elec.pas.cond.value.vec =                                      par.intn.elec.pas.cond.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.intn.elec.pas.cond.units =                                          {2,'mS','cm',[1 -2]};
+par.intn.elec.pas.cond.units =                                          {2,'mS','cm',[1, -2]};
 par.intn.elec.pas.axres.value.vec =                                     par.intn.elec.pas.axres.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.intn.elec.pas.axres.units =                                         {2,' O','m',[1 1]};
+par.intn.elec.pas.axres.units =                                         {2,' O',' m',[1, 1]};
 
 par.myel.elec.pas.cap.value.vec =                                       par.myel.elec.pas.cap.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.myel.elec.pas.cap.units =                                           {2,'uF','cm',[1,-2]};
+par.myel.elec.pas.cap.units =                                           {2,'uF','cm',[1, -2]};
 par.myel.elec.pas.cond.value.vec =                                      par.myel.elec.pas.cond.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.myel.elec.pas.cond.units =                                          {2,'mS','cm',[1,-2]};
+par.myel.elec.pas.cond.units =                                          {2,'mS','cm',[1, -2]};
 par.myel.elec.pas.axres.value.vec =                                     par.myel.elec.pas.axres.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.myel.elec.pas.axres.units =                                         {2,' O','m',[1 1]};
+par.myel.elec.pas.axres.units =                                         {2,' O',' m',[1, 1]};
 
 
 

@@ -1,4 +1,4 @@
-function par = parameters_Richardson
+function par = parameters_Richardson_myel
 
 
 
@@ -152,7 +152,7 @@ par.channels(1) =                                   RichardsonMcIntyreGrill2000F
 par.channels(2) =                                   RichardsonMcIntyreGrill2000PersistentNa;
 par.channels(3) =                                   RichardsonMcIntyreGrill2000SlowK;
 par.channels(4) =                                   RichardsonMcIntyreGrill2000SlowK;
-% par.channels(4).cond.value = 0 * par.channels(4).cond.value;
+par.channels(4).cond.value = 0 * par.channels(4).cond.value;
 
 par.channels(1).location =                          [par.geo.nodeSegments{:}]';
 par.channels(2).location =                          [par.geo.nodeSegments{:}]';

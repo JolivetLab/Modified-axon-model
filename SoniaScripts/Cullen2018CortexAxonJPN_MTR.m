@@ -1,4 +1,4 @@
-function par = Cullen2018CortexAxon()
+function par = Cullen2018CortexAxonJPN_MTR()
 
 % Initialize all parameters.
 par =                                                                   GenerateEmptyParameterStructure();
@@ -63,12 +63,12 @@ par.node.geo.length.units =                                             {1, 'um'
 % Node segment diameter.
 par.node.seg.geo.diam.value.ref =                                       par.node.geo.diam.value.ref;
 par.node.seg.geo.diam.value.vec =                                       repmat(par.node.geo.diam.value.vec, 1, par.geo.nnodeseg);
-par.node.seg.geo.diam.units =                                               {1, 'um', 1};
+par.node.seg.geo.diam.units =                                           {1, 'um', 1};
 
 % Node segment length.
 par.node.seg.geo.length.value.ref =                                     par.node.geo.length.value.ref;
 par.node.seg.geo.length.value.vec =                                     repmat(par.node.geo.length.value.vec / par.geo.nnodeseg, 1, par.geo.nnodeseg);
-par.node.seg.geo.length.units =                                               {1, 'um', 1};
+par.node.seg.geo.length.units =                                         {1, 'um', 1};
 
 % Internode geometry
 % Internode axon diameter.
@@ -90,7 +90,7 @@ par.intn.seg.geo.diam.units =                                           {1, 'um'
 
 % General electrical
 % Resting membrane potential.
-par.elec.pas.vrest.value.ref =                                              -72;
+par.elec.pas.vrest.value.ref =                                          -72;
 par.elec.pas.vrest.value.vec =                                          par.elec.pas.vrest.value.ref * ones(par.geo.totalNumberSegments, 1);
 par.elec.pas.vrest.units =                                              {1, 'mV', 1};
 
@@ -101,9 +101,9 @@ par.elec.pas.vrest.units =                                              {1, 'mV'
 % par.node.elec.pas.leak.erev.units =                                     {1, 'mV', 1};
 
 % Node leak conductance - adjusted to set resting membrane potential.
-par.node.elec.pas.cond.value.ref =                                     0.8; % same as Richardson - from correspondence -- don't actually know what it should be
+par.node.elec.pas.cond.value.ref =                                      0.8; % same as Richardson - from correspondence -- don't actually know what it should be
 par.node.elec.pas.cond.value.vec =                                      par.node.elec.pas.cond.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
-par.node.elec.pas.cond.units =                                     {2, 'mS', 'mm', [1, -2]};
+par.node.elec.pas.cond.units =                                          {2, 'mS', 'mm', [1, -2]};
 
 % fileStr = {'McIntyre2002FastNa.mat', 'McIntyre2002PersistentNa.mat', 'McIntyre2002SlowK.mat'};
 % for fileIdx = 1 : length(fileStr)
@@ -112,44 +112,44 @@ par.node.elec.pas.cond.units =                                     {2, 'mS', 'mm
 % par =                                                                   CalculateLeakConductance(par);
 
 % Node axial resistivity.
-par.node.elec.pas.axres.value.ref =                                         0.7;
+par.node.elec.pas.axres.value.ref =                                     0.7;
 par.node.elec.pas.axres.value.vec =                                     par.node.elec.pas.axres.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
 par.node.elec.pas.axres.units =                                         {2, ' O', ' m', [1, 1]};
 
 % Node membrane capacitance.
-par.node.elec.pas.cap.value.ref =                                           0.9;
+par.node.elec.pas.cap.value.ref =                                       0.9;
 par.node.elec.pas.cap.value.vec =                                       par.node.elec.pas.cap.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
 par.node.elec.pas.cap.units =                                           {2, 'uF', 'cm', [1, -2]};
 
 % Myelin membrane capacitance.
-par.myel.elec.pas.cap.value.ref =                                           0.9;
+par.myel.elec.pas.cap.value.ref =                                       0.9;
 par.myel.elec.pas.cap.value.vec =                                       par.myel.elec.pas.cap.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.myel.elec.pas.cap.units =                                           {2, 'uF', 'cm', [1, -2]};
 
 % Myelin membrane conductance.
-par.myel.elec.pas.cond.value.ref =                                          1;
+par.myel.elec.pas.cond.value.ref =                                      1;
 par.myel.elec.pas.cond.value.vec =                                      par.myel.elec.pas.cond.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.myel.elec.pas.cond.units =                                          {2, 'mS', 'cm', [1, -2]};
 
 % Internode axon membrane capacitance.
-par.intn.elec.pas.cap.value.ref =                                           0.9;
+par.intn.elec.pas.cap.value.ref =                                       0.9;
 par.intn.elec.pas.cap.value.vec =                                       par.intn.elec.pas.cap.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.intn.elec.pas.cap.units =                                           {2, 'uF', 'cm', [1, -2]};
 
 % Internode axon membrane conductance.
-par.intn.elec.pas.cond.value.ref =                                          0.1;
+par.intn.elec.pas.cond.value.ref =                                      0.1;
 par.intn.elec.pas.cond.value.vec =                                      par.intn.elec.pas.cond.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.intn.elec.pas.cond.units =                                          {2, 'mS', 'cm', [1, -2]}; 
 
 % Internode axon membrane resistivity.
-par.intn.elec.pas.axres.value.ref =                                        0.7;
+par.intn.elec.pas.axres.value.ref =                                     0.7;
 par.intn.elec.pas.axres.value.vec =                                     par.intn.elec.pas.axres.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.intn.elec.pas.axres.units =                                        {2, ' O', ' m', [1, 1]};
+par.intn.elec.pas.axres.units =                                         {2, ' O', ' m', [1, 1]};
 
 % Periaxonal space resistivity.
-par.myel.elec.pas.axres.value.ref =                                        0.7;
+par.myel.elec.pas.axres.value.ref =                                     0.7;
 par.myel.elec.pas.axres.value.vec =                                     par.myel.elec.pas.axres.value.ref * ones(par.geo.nintn, par.geo.nintseg);
-par.myel.elec.pas.axres.units =                                        {2, ' O', ' m', [1, 1]};
+par.myel.elec.pas.axres.units =                                         {2, ' O', ' m', [1, 1]};
 
 % Periaxonal space width.
 par.myel.geo.peri.value.ref =                                           6.477;

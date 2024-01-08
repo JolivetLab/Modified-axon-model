@@ -1,16 +1,15 @@
 % Setup
-
+clear
 % par_og = Richardson2000FullAxon();
 par_crsp = parameters_Richardson();
 par_me = Cullen2018CortexAxonJPN_MTR();
 par_me1 = parameters_corticalaxon();
 
 par_me2 = parameters_Richardson_myel();
-% par_me2.channels(4).cond.value = 0 * par_me2.channels(4).cond.value; % toggle
 % on/off to see influence of channels under myelin
 
 %% test - same as run_Richardson_default
-par = par_me2;
+par = par_crsp;
 V = model(par);
 
 dt = unitsabs(par.sim.dt.units) * par.sim.dt.value;

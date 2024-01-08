@@ -327,7 +327,7 @@ for i = 1:T
         activesum2(par.channels(ii).locationInActive) = activesum2(par.channels(ii).locationInActive) + temp.*par.channels(ii).erev.value;
     end
     
-    INa = 2*activesum.*V2(1+par.channels(1).location, 2) - activesum2;
+%     INa = 2*activesum.*V2(1+par.channels(1).location, 2) - activesum2;
     IL = leak(par.channels(1).location, 1).*(V2(1+par.channels(1).location, 2) - erev(par.channels(1).location));
     
     A(activeUpdateNotCoveredIdx) = offsetNotCovered + activesum(notcoveredActiveIdx);
