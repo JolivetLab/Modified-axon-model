@@ -2,6 +2,7 @@
 clear
 % par_og = Richardson2000FullAxon();
 par_crsp = parameters_Richardson();
+par_default = Cullen2018CortexAxon();
 par_me = Cullen2018CortexAxonJPN_MTR();
 par_me1 = parameters_corticalaxon();
 
