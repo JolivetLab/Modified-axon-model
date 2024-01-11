@@ -168,7 +168,7 @@ Raxial(node2node,1)=reshape(((RaxNODE(:,2:end)+RaxNODE(:,1:end-1))/2)',nnodes*(n
 
 
 %% active conductances
-Vbounds = [-200, 400];
+Vbounds = [-200, 200];
 Vstep = 0.01;
 V = (Vbounds(1):Vstep:Vbounds(2))';
 
