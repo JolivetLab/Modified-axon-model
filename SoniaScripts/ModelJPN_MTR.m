@@ -43,7 +43,7 @@ nis = par.geo.nintseg;
 nns = par.geo.nnodeseg; %%
 nintn = par.geo.nintn;
 nnodes = par.geo.nnode;
-tns = (nis * nintn) + (nns * nnodes);
+tns = par.geo.totalNumberSegments;
 tnf = tns - 1;
 
 
@@ -58,10 +58,6 @@ node2intn = nns:(nns+nis):tnf;
 intn2node = (nns+nis):(nns+nis):tnf;
 intn2intn = 1 : tnf;
 intn2intn([node2node, node2intn, intn2node]) = [];
-
-% Inject current into first node for now.
-Istim = zeros(tns, 2, T);
-Istim(1:nns, 1, 1:1+DUR) = Is/nns;
 
 
 %%%%%%%%%%% GEOMETRY OF THE AXON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,61 +98,69 @@ AREA_NODE = pi*RADIUS_NODE.^2;                                                  
 AREA_INODE = pi*RADIUS_INODE.^2;                                                                        % nintnxnintseg mat
 AREA_PERI = pi*((RADIUS_INODE+PERIAXONAL_SPACE).^2-RADIUS_INODE.^2); % nintnxnintseg mat
 
+surfaceAreaAxolemma = [reshape([SURFACEAREA_NODE(1:end-1, :), SURFACEAREA_INODE]', [], 1); SURFACEAREA_NODE(end, :)'];
+
+% Inject current into first node for now.
+Istim = zeros(tns, 2, T);
+Istim([par.stim.location], 1, 1) = surfaceAreaAxolemma([par.stim.location])*Is;
 
 
 %%%%%%%%%%% ELECTRICAL PROPERTIES OF THE AXON %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Capacitance of each segment of node, internode and myelin membrane.
-C_NODE = simunits(par.node.elec.pas.cap.units)*par.node.elec.pas.cap.value*SURFACEAREA_NODE;            % nnodex1 vec
-CI_INODE = simunits(par.intn.elec.pas.cap.units)*par.intn.elec.pas.cap.value*SURFACEAREA_INODE;         % nintnxnintseg mat
+C_NODE = simunits(par.node.elec.pas.cap.units)*par.node.elec.pas.cap.value.ref*SURFACEAREA_NODE;            % nnodex1 vec
+CI_INODE = simunits(par.intn.elec.pas.cap.units)*par.intn.elec.pas.cap.value.ref*SURFACEAREA_INODE;         % nintnxnintseg mat
 Cmy_INODE=cell(1,nintn);
 CMY_INODE=zeros(nintn,nis);
 for i=1:nintn
-    Cmy_INODE{i} = simunits(par.myel.elec.pas.cap.units)*par.myel.elec.pas.cap.value*SURFACEAREA_MYELIN{i}; % nlamxnintseg mat
+    Cmy_INODE{i} = simunits(par.myel.elec.pas.cap.units)*par.myel.elec.pas.cap.value.ref*SURFACEAREA_MYELIN{i}; % nlamxnintseg mat
     CMY_INODE(i,:) = 1./(sum(1./Cmy_INODE{i},1));                                                       % nintnxnintseg mat
 end   
 
 % Leak conductance of each segment of node, internode and myelin membrane.
-LEAK_NODE = simunits(par.node.elec.pas.leak.cond.units)*par.node.elec.pas.leak.cond.value.vec.*SURFACEAREA_NODE;    % nnodex1 vec
-LEAKI_INODE = simunits(par.intn.elec.pas.cond.units)*par.intn.elec.pas.cond.value*SURFACEAREA_INODE;                % nintnxnintseg mat
+LEAK_NODE = simunits(par.node.elec.pas.cond.units)*par.node.elec.pas.cond.value.vec.*SURFACEAREA_NODE;    % nnodex1 vec
+LEAKI_INODE = simunits(par.intn.elec.pas.cond.units)*par.intn.elec.pas.cond.value.ref*SURFACEAREA_INODE;                % nintnxnintseg mat
 LEAKmy_INODE=cell(1,nintn);
 LEAKMY_INODE=zeros(nintn,nis);
 for i=1:nintn
-    LEAKmy_INODE{i} = simunits(par.myel.elec.pas.cond.units)*par.myel.elec.pas.cond.value*SURFACEAREA_MYELIN{i};    % nlamxnintn mat
+    LEAKmy_INODE{i} = simunits(par.myel.elec.pas.cond.units)*par.myel.elec.pas.cond.value.ref*SURFACEAREA_MYELIN{i};    % nlamxnintn mat
     LEAKMY_INODE(i,:) = 1./(sum(1./LEAKmy_INODE{i},1));                                                             % nintnxnintseg mat
 end
 
 
 % Active conductances for each segment of the node.
-actcond=cell(1,length(par.node.elec.act));
-for i=1:length(par.node.elec.act)
-    actcond{i}=simunits(par.node.elec.act(i).cond.units)*par.node.elec.act(i).cond.value.vec.*SURFACEAREA_NODE;
-    actcond{i} = reshape(actcond{i}', [], 1);
+actcond=cell(1,length(par.channels));
+for i=1:length(par.channels)
+    actcond{i}=simunits(par.channels(i).cond.units)*par.channels(i).cond.value.*surfaceAreaAxolemma(par.channels(i).location);
+%     actcond{i} = reshape(actcond{i}', [], 1);
 end
 
 % Longitidunal resistance of each segment of the axon for main axon
 % and periaxonal space.
-RaxNODE = simunits(par.node.elec.pas.axres.units)*par.node.elec.pas.axres.value*LENGTH_NODE./AREA_NODE;
-RaxINODE = simunits(par.node.elec.pas.axres.units)*par.node.elec.pas.axres.value*LENGTH_INODE./AREA_INODE;   % vec
-RpINODE = simunits(par.myel.elec.pas.peri.axres.units)*par.myel.elec.pas.peri.axres.value*LENGTH_INODE./AREA_PERI;   % vec
+RaxNODE = simunits(par.node.elec.pas.axres.units)*par.node.elec.pas.axres.value.ref*LENGTH_NODE./AREA_NODE;
+RaxINODE = simunits(par.node.elec.pas.axres.units)*par.node.elec.pas.axres.value.ref*LENGTH_INODE./AREA_INODE;   % vec
+RpINODE = simunits(par.myel.elec.pas.axres.units)*par.myel.elec.pas.axres.value.ref*LENGTH_INODE./AREA_PERI;   % vec
 
 
 cap=zeros(tns,2);
 cap(nodes,1)=reshape(C_NODE', nns*nnodes, 1);
 cap(intn,:)=[reshape(CI_INODE',nis*nintn,1),reshape(CMY_INODE',nis*nintn,1)];
+% clear C_NODE Cmy_INODE CMY_INODE CI_INODE
 
 leak=zeros(tns,2);
 leak(nodes,1)=reshape(LEAK_NODE', nns*nnodes, 1);
 leak(intn,:)=[reshape(LEAKI_INODE',nis*nintn,1),reshape(LEAKMY_INODE',nis*nintn,1)];
 
 
-vrest = simunits(par.elec.pas.vrest.units)*par.elec.pas.vrest.value;
+vrest = simunits(par.elec.pas.vrest.units)*par.elec.pas.vrest.value.ref;
 
-ELN = simunits(par.node.elec.pas.leak.erev.units)*par.node.elec.pas.leak.erev.value.vec;
-ELI = vrest;
+% ELN = simunits(par.node.elec.pas.leak.erev.units)*par.node.elec.pas.leak.erev.value.vec;
+% ELI = vrest;
+% 
+% erev=zeros(tns,1);
+% erev(nodes)=reshape(ELN', nns*nnodes, 1);
+% erev(intn)=ELI;
 
-erev=zeros(tns,1);
-erev(nodes)=reshape(ELN', nns*nnodes, 1);
-erev(intn)=ELI;
+erev = simunits(par.elec.pas.erev.units)*par.elec.pas.erev.value.vec;
 
 Raxial=zeros(tnf,2);
 Raxial(node2intn,2)=RpINODE(:,1)/2;
@@ -171,12 +175,12 @@ Raxial(node2node,1)=reshape((RaxNODE(:, 1:end-1)/2+RaxNODE(:, 2:end)/2)', nnodes
 
 %%%%%%%%%%% ACTIVE COMPONENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialize the gating variables.
-gates=cell(1,length(par.node.elec.act));
-for i=1:length(par.node.elec.act)
-    gates{i}=cell(1,par.node.elec.act(i).gates.number);
-    for j=1:par.node.elec.act(i).gates.number
-        a = rateequation(vrest, par.sim.temp, par.node.elec.act(i).gates.temp, par.node.elec.act(i).gates.alpha.q10(j), par.node.elec.act(i).gates.alpha.equ{j});
-        b = rateequation(vrest, par.sim.temp, par.node.elec.act(i).gates.temp, par.node.elec.act(i).gates.beta.q10(j), par.node.elec.act(i).gates.beta.equ{j});
+gates=cell(1,length(par.channels));
+for i=1:length(par.channels)
+    gates{i}=cell(1,par.channels(i).gates.number);
+    for j=1:par.channels(i).gates.number
+        a = rateequation(vrest, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.alpha.q10(j), par.channels(i).gates.alpha.equ{j});
+        b = rateequation(vrest, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.beta.equ{j});
         gates{i}{j}(1:nns*nnodes, 1) = a/(a+b);
     end
 end
@@ -195,20 +199,20 @@ V               = (Vlowerlimit:Vstep:Vupperlimit)';
 gridsize        = length(V);
 
 
-gamma=cell(1,length(par.node.elec.act));
-delta=cell(1,length(par.node.elec.act));
-for i=1:length(par.node.elec.act)
-    gamma{i}=cell(1,par.node.elec.act(i).gates.number);
-    delta{i}=cell(1,par.node.elec.act(i).gates.number);
-    for j=1:par.node.elec.act(i).gates.number
-        a = rateequation(V, par.sim.temp, par.node.elec.act(i).gates.temp, par.node.elec.act(i).gates.alpha.q10(j), par.node.elec.act(i).gates.alpha.equ{j});
-        b = rateequation(V, par.sim.temp, par.node.elec.act(i).gates.temp, par.node.elec.act(i).gates.beta.q10(j), par.node.elec.act(i).gates.beta.equ{j});
+gamma=cell(1,length(par.channels));
+delta=cell(1,length(par.channels));
+for i=1:length(par.channels)
+    gamma{i}=cell(1,par.channels(i).gates.number);
+    delta{i}=cell(1,par.channels(i).gates.number);
+    for j=1:par.channels(i).gates.number
+        a = rateequation(V, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.alpha.q10(j), par.channels(i).gates.alpha.equ{j});
+        b = rateequation(V, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.beta.equ{j});
         gamma{i}{j}=a./(1/dt+(1/2)*(a+b));
         delta{i}{j}=(1/dt-(1/2)*(a+b))./(1/dt+(1/2)*(a+b));
     end
 end
 
-if isempty(par.node.elec.act)
+if isempty(par.channels)
     gamma{1}{1}=zeros(1,gridsize);
     delta{1}{1}=zeros(1,gridsize);
 end
@@ -216,12 +220,12 @@ end
 
 % Just simplify notation for the active channel reversal potentials and
 % power with which to raise the gate.
-erevval = nan(length(par.node.elec.act), 1);
-for j=1:length(par.node.elec.act)
-    for k=1:par.node.elec.act(j).gates.number
-        numgates(j, k)=par.node.elec.act(j).gates.numbereach(k); %#ok<AGROW>
+erevval = nan(length(par.channels), 1);
+for j=1:length(par.channels)
+    for k=1:par.channels(j).gates.number
+        numgates(j, k)=par.channels(j).gates.numbereach(k); %#ok<AGROW>
     end
-    erevval(j)=par.node.elec.act(j).erev.value;
+    erevval(j)=par.channels(j).erev.value;
 end
 
 
@@ -263,8 +267,50 @@ A                                           = spdiags(B, d, 2*tns, 2*tns);
 
 % Indices of the active segments (nodes), which need to be updated on each
 % time-step.
-L                                           = sub2ind(size(A), nodes, nodes);
-offset                                      = A(L);
+% L                                           = sub2ind(size(A), nodes, nodes);
+% offset                                      = A(L);
+
+notcoveredAll  = nodes;
+notcoveredAndActive = sort(intersect(par.active.segments, nodes), 'ascend');
+covered = sort(intersect(par.active.segments, intn), 'ascend');
+notcoveredActiveIdx = [];
+for i = 1 : length(notcoveredAndActive)
+    notcoveredActiveIdx(i, 1) = find(par.active.segments == notcoveredAndActive(i));
+end
+coveredActiveIdx = [];
+for i = 1 : length(covered)
+    coveredActiveIdx(i, 1) = find(par.active.segments == covered(i));
+end
+
+if isempty(notcoveredActiveIdx)
+    notcoveredAndActive = [];
+    activeUpdateNotCoveredIdx = [];
+    offsetNotCovered = [];
+else
+    activeUpdateNotCoveredIdx = sub2ind(size(A), notcoveredAndActive, notcoveredAndActive);
+    offsetNotCovered = A(activeUpdateNotCoveredIdx);
+end
+
+if isempty(coveredActiveIdx)
+    covered = [];
+    activeUpdateCoveredInsideIdx = [];
+    offsetCoveredInside = [];
+    activeUpdateCoveredInside2Idx = [];
+    offsetCoveredInside2 = [];
+    activeUpdateCoveredOutsideIdx = [];
+    activeUpdateCoveredOutside2Idx = [];
+    offsetCoveredOutside = [];
+    offsetCoveredOutside2 = [];
+else
+    activeUpdateCoveredInsideIdx = sub2ind(size(A),covered,covered);
+    offsetCoveredInside = A(activeUpdateCoveredInsideIdx);
+    activeUpdateCoveredInside2Idx = sub2ind(size(A),covered,covered+tns);
+    offsetCoveredInside2 = A(activeUpdateCoveredInside2Idx);
+    activeUpdateCoveredOutsideIdx = sub2ind(size(A), covered+tns, covered+tns);
+    activeUpdateCoveredOutside2Idx = sub2ind(size(A), covered+tns, covered);
+    offsetCoveredOutside = A(activeUpdateCoveredOutsideIdx);
+    offsetCoveredOutside2 = A(activeUpdateCoveredOutside2Idx);
+end
 
 % -------------------------- End A Matrix ----------------------------- %
 
@@ -297,7 +343,10 @@ for i = 1 : T
     
     % Find indices of the gamma and delta tables.
     % Check that we are not outside the allowable range.
-    tableIdx = round((V2(nodes+1, 2) - Vlowerlimit) * (1 / Vstep)) + 1;
+%     tableIdx = round((V2(nodes+1, 2) - Vlowerlimit) * (1 / Vstep)) + 1; %
+%     old
+    tableIdx = round((V2(2:end-1, 2) - Vlowerlimit) * (1 / Vstep)) + 1; %in-between?
+%     round(1 + rateTableSize * ((V2(2:end-1, 2) - Vbounds(1))/(Vbounds(2)    - Vbounds(1)))); %new
     if any(tableIdx > gridsize)
         fprintf('\nToo much stimulation: reduce stimulation\n');
         break
@@ -315,18 +364,18 @@ for i = 1 : T
     end
     
     % Update the gating variables.
-    for j = 1 : length(par.node.elec.act)
-        for k = 1 : par.node.elec.act(j).gates.number
-            gates{j}{k} = gamma{j}{k}(tableIdx) + delta{j}{k}(tableIdx) .* gates{j}{k};
+    for j = 1 : length(par.channels)
+        for k = 1 : par.channels(j).gates.number
+            gates{j}{k} = gamma{j}{k}(tableIdx(par.channels(j).location)) + delta{j}{k}(tableIdx(par.channels(j).location)) .* gates{j}{k};
         end
     end
     
     % Components to add to the A matrix and RHS of equation (*)
     activesum(:) = 0;
     activesum2(:) = 0;
-    for j = 1 : length(par.node.elec.act)
+    for j = 1 : length(par.channels)
         tempprod(:) = 1;
-        for k = 1 : par.node.elec.act(j).gates.number
+        for k = 1 : par.channels(j).gates.number
             tempprod = tempprod .* (gates{j}{k} .^ numgates(j,k));
         end
         activesum = activesum + actcond{j} .* tempprod / 2;
@@ -334,10 +383,16 @@ for i = 1 : T
     end
     
     % Update active entries of the A matrix.
-    A(L) = offset + activesum';
+%     A(L) = offset + activesum';
+    A(activeUpdateNotCoveredIdx) = offsetNotCovered + activesum(notcoveredActiveIdx);
+    A(activeUpdateCoveredInsideIdx) = offsetCoveredInside + activesum(coveredActiveIdx);
+    A(activeUpdateCoveredInside2Idx) = offsetCoveredInside2 - activesum(coveredActiveIdx);
+    A(activeUpdateCoveredOutsideIdx) = offsetCoveredOutside + activesum(coveredActiveIdx);
+    A(activeUpdateCoveredOutside2Idx) = offsetCoveredOutside2 - activesum(coveredActiveIdx);
+    
     
     % Calculate passive part of the RHS of equation (*)
-    V1 = Istim(:,:,i)...
+    V1 = Istim(:, :, (i>DUR+1)+1)...
           +(V2(1:end-2,2:3)-V2(2:end-1,2:3)).*Gaxialpad(1:end-1,:)...
           -(V2(2:end-1,2:3)-V2(3:end,2:3)).*Gaxialpad(2:end,:)...
           +Radialpre(:,1:2).*(diff(V2(2:end-1,1:3),1,2))...
@@ -345,8 +400,14 @@ for i = 1 : T
           +Leakpre;
     
     % Update active segments of RHS.
-    V1(nodes,1)=V1(nodes,1)-activesum.*V2(nodes+1,2)+activesum2;
-    V1(nodes,2)=0;
+%     V1(nodes,1)=V1(nodes,1)-activesum.*V2(nodes+1,2)+activesum2;
+%     V1(nodes,2)=0;
+    V1(notcoveredAndActive) = V1(notcoveredAndActive)-activesum(notcoveredActiveIdx).*V2((tns+2) + (notcoveredAndActive+1))+activesum2(notcoveredActiveIdx);
+    V1(notcoveredAll+tns) = 0;
+     
+    V1(covered) = V1(covered) - activesum(coveredActiveIdx).*(V2((tns+2) + (covered+1)) - V2(2*(tns+2) + (covered+1))) + activesum2(coveredActiveIdx);
+    V1(covered+tns) = V1(covered+tns) + activesum(coveredActiveIdx).*(V2((tns+2) + (covered+1)) - V2(2*(tns+2) + (covered+1))) - activesum2(coveredActiveIdx);
+
     
     V1=reshape(V1,2*tns,1);
     
