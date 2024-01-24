@@ -181,7 +181,7 @@ for i=1:length(par.channels)
     for j=1:par.channels(i).gates.number
         a = rateequation(vrest, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.alpha.q10(j), par.channels(i).gates.alpha.equ{j});
         b = rateequation(vrest, par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.beta.equ{j});
-        gates{i}{j}(1:nns*nnodes, 1) = a/(a+b);
+        gates{i}{j}(1:length(par.channels(i).location), 1) = a/(a+b);
     end
 end
 
@@ -320,9 +320,8 @@ Radialpre(isnan(Radialpre))                 = 0;
 Leakpre                                     = [leak(:, 1).*erev, -leak(:, 1).*erev];
 
 
-activesum                                   = zeros(nns*nnodes, 1);
-activesum2                                  = zeros(nns*nnodes, 1);
-tempprod                                    = ones(nns*nnodes, 1);
+activesum                                   = zeros(size(par.active.segments));
+activesum2                                  = zeros(size(par.active.segments));
 
 V1                                          = vrest * repmat([1, 0], tns, 1);
 V2                                          = [zeros(tns+2, 1), [[0, 0]; reshape(V1, tns, 2); [0, 0]], zeros(tns+2, 1)];
@@ -374,12 +373,13 @@ for i = 1 : T
     activesum(:) = 0;
     activesum2(:) = 0;
     for j = 1 : length(par.channels)
-        tempprod(:) = 1;
+        % tempprod(:) = 1;
+        tempprod = ones(length(par.channels(j).location), 1);
         for k = 1 : par.channels(j).gates.number
             tempprod = tempprod .* (gates{j}{k} .^ numgates(j,k));
         end
-        activesum = activesum + actcond{j} .* tempprod / 2;
-        activesum2 = activesum2 + actcond{j} .* tempprod * erevval(j);
+        activesum(par.channels(j).locationInActive)  = activesum(par.channels(j).locationInActive)  + actcond{j} .* tempprod / 2;
+        activesum2(par.channels(j).locationInActive)  = activesum2(par.channels(j).locationInActive) + actcond{j} .* tempprod * erevval(j);
     end
     
     % Update active entries of the A matrix.
