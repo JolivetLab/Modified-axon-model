@@ -183,7 +183,7 @@ par.channels(1) =                                   McIntyre2002FastNa_JPN;
 par.channels(2) =                                   McIntyre2002PersistentNa_JPN;
 par.channels(3) =                                   McIntyre2002SlowK_JPN;
 par.channels(4) =                                   McIntyre2002SlowK_JPN;
-% par.channels(4).cond.value = 0 * par.channels(4).cond.value;
+par.channels(4).cond.value = 0 * par.channels(4).cond.value;
 
 par.channels(1).location =                          [par.geo.nodeSegments{:}]';
 par.channels(2).location =                          [par.geo.nodeSegments{:}]';
