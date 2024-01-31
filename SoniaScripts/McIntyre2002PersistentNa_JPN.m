@@ -20,7 +20,7 @@ k.cond.units =                              {2,' S','cm',[1 -2]};
 k.erev.value =                              60;
 k.erev.units =                              {1, 'mV', 1};
 
-k.vrest.value =                             -82;
+k.vrest.value =                             -72;%-82;
 k.vrest.units =                             {1, 'mV', 1};
 
 k.gates.number =                            1;

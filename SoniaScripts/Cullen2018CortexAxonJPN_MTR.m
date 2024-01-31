@@ -76,7 +76,7 @@ par.intn.geo.diam.value.ref =                                           0.5894;
 par.intn.geo.diam.value.vec =                                           par.intn.geo.diam.value.ref * ones(par.geo.nintn, 1);
 par.intn.geo.diam.units =                                               {1, 'um', 1};
 % Internode length.
-par.intn.geo.length.value.ref =                                         48.32;
+par.intn.geo.length.value.ref =                                         50.32;%48.32;
 par.intn.geo.length.value.vec =                                         par.intn.geo.length.value.ref * ones(par.geo.nintn, 1);
 par.intn.geo.length.units=                                              {1, 'um', 1};
 % Internode segment length.
@@ -101,7 +101,7 @@ par.elec.pas.vrest.units =                                              {1, 'mV'
 % par.node.elec.pas.leak.erev.units =                                     {1, 'mV', 1};
 
 % Node leak conductance - adjusted to set resting membrane potential.
-par.node.elec.pas.cond.value.ref =                                      0.8; % same as Richardson - from correspondence -- don't actually know what it should be
+par.node.elec.pas.cond.value.ref =                                      0.3211; % same as Richardson - from correspondence -- don't actually know what it should be
 par.node.elec.pas.cond.value.vec =                                      par.node.elec.pas.cond.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
 par.node.elec.pas.cond.units =                                          {2, 'mS', 'mm', [1, -2]};
 
