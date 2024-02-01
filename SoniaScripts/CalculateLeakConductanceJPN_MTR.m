@@ -13,39 +13,7 @@ function par = CalculateLeakConductanceJPN_MTR(par)
 %   parameters must be set before it is called (including the desired leak
 %   conductance units).
 
-% Axon geometry
-PERIAXONAL_SPACE = simunits(par.myel.geo.peri.units) * par.myel.geo.peri.value.vec;
-
-% Node and internode radius.
-RADIUS_NODE = simunits(par.node.geo.diam.units)*par.node.seg.geo.diam.value.vec/2;
-RADIUS_INODE = simunits(par.intn.seg.geo.diam.units)*par.intn.seg.geo.diam.value.vec/2;
-
-% Myelin radius (and number of lamellae/myelin wrap periodicity)
-NUMBER_LAMELLAE = par.myel.geo.numlamellae.value.vec;
-PERIODICITY = simunits(par.myel.geo.period.units)*par.myel.geo.period.value;
-RADIUS_MYELIN = cell(1,par.geo.nintn);
-for i=1:par.geo.nintn
-    RADIUS_MYELIN{i} = repmat(RADIUS_INODE(i,:),2*NUMBER_LAMELLAE(i,1),1)...
-                        +repmat(PERIAXONAL_SPACE(i,:),2*NUMBER_LAMELLAE(i,1),1)...
-                        +repmat(((1:2*NUMBER_LAMELLAE(i))'-1)*(PERIODICITY/2),1,par.geo.nintseg);
-end
-
-% Node and internode length
-LENGTH_NODE = simunits(par.node.geo.length.units)*par.node.seg.geo.length.value.vec;                        % nnodex1 vec
-LENGTH_INODE = simunits(par.intn.seg.geo.length.units)*par.intn.seg.geo.length.value.vec;               % nintnxnintseg mat
-
-% Node, internode and myelin membrane surface areas.
-SURFACEAREA_NODE = 2*pi*RADIUS_NODE.*LENGTH_NODE;                                                       % nnodex1 vec
-SURFACEAREA_INODE = 2*pi*RADIUS_INODE.*LENGTH_INODE;                                                    % nintnxnintseg mat
-SURFACEAREA_MYELIN=cell(1,par.geo.nintn);
-for i=1:par.geo.nintn
-    SURFACEAREA_MYELIN{i} = 2*pi*RADIUS_MYELIN{i}.*repmat(LENGTH_INODE(i,:),2*NUMBER_LAMELLAE(i,1),1);  % nlamxnintseg mat
-end
-
-surfaceAreaAxolemma = [reshape([SURFACEAREA_NODE(1:end-1, :), SURFACEAREA_INODE]', [], 1); SURFACEAREA_NODE(end, :)'];
-%%
 nodes = reshape(bsxfun(@plus, (1:par.geo.nnodeseg)', (0:par.geo.nnode-1)*(par.geo.nnodeseg+par.geo.nintseg)), 1, []);
-%%
 
 % Resting membrane potential
 vrest = simunits(par.elec.pas.vrest.units) * par.elec.pas.vrest.value.ref;
@@ -53,7 +21,7 @@ vrest = simunits(par.elec.pas.vrest.units) * par.elec.pas.vrest.value.ref;
 % Active conductances
 actcond=cell(1,length(par.channels));
 for i=1:length(par.channels)
-    actcond{i}=simunits(par.channels(i).cond.units)*par.channels(i).cond.value.*surfaceAreaAxolemma(par.channels(i).location);
+    actcond{i}=simunits(par.channels(i).cond.units)*par.channels(i).cond.value;%.*surfaceAreaAxolemma(par.channels(i).location);
 end
 
 % Gating variable values at resting membrane potential.
