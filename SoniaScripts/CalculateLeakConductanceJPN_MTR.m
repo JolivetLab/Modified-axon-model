@@ -13,8 +13,6 @@ function par = CalculateLeakConductanceJPN_MTR(par)
 %   parameters must be set before it is called (including the desired leak
 %   conductance units).
 
-nodes = reshape(bsxfun(@plus, (1:par.geo.nnodeseg)', (0:par.geo.nnode-1)*(par.geo.nnodeseg+par.geo.nintseg)), 1, []);
-
 % Resting membrane potential
 vrest = simunits(par.elec.pas.vrest.units) * par.elec.pas.vrest.value.ref;
 
@@ -44,6 +42,8 @@ for j = 1 : length(par.channels)
     end
     activesum(par.channels(j).locationInActive) = activesum(par.channels(j).locationInActive) + actcond{j} .* tempprod * (vrest - simunits(par.channels(j).erev.units) * par.channels(j).erev.value);
 end
+
+nodes = par.channels(1).locationInActive; % where sodium channels are expressed
 
 % Leak conductances to balance the active channel currents.
 par.node.elec.pas.cond.value.vec = ...
