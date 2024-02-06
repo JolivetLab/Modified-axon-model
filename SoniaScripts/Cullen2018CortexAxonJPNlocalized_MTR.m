@@ -56,9 +56,8 @@ par.geo.internodeSegments = mat2cell( ...
 
 nseg = par.geo.nintseg + par.geo.nnodeseg;
 seg = 0:(par.geo.nintn-1);
-jpns = [nseg*seg+4; nseg*seg+5; seg*nseg+(nseg-3); seg*nseg+(nseg-2)];
-jpns = jpns(:);
-par.geo.juxtaparanodeSegments = num2cell(jpns);
+jpns = [nseg*seg+4; nseg*seg+5; seg*nseg+(nseg-3); seg*nseg+(nseg-2)]';
+par.geo.juxtaparanodeSegments = mat2cell(jpns, ones(1, par.geo.nintn), par.geo.njpnseg*2);
 
 % Node geometry
 % Node diameter.
@@ -194,6 +193,7 @@ par.channels(1) =                                   McIntyre2002FastNa_JPN;
 par.channels(2) =                                   McIntyre2002PersistentNa_JPN;
 par.channels(3) =                                   McIntyre2002SlowK_JPN;
 par.channels(4) =                                   McIntyre2002SlowK_JPN;
+par.channels(4).cond.value = 0 * par.channels(4).cond.value;
 
 par.channels(1).location =                          [par.geo.nodeSegments{:}]';
 par.channels(2).location =                          [par.geo.nodeSegments{:}]';
