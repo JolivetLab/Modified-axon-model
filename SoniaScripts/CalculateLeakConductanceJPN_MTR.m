@@ -43,9 +43,10 @@ for j = 1 : length(par.channels)
     activesum(par.channels(j).locationInActive) = activesum(par.channels(j).locationInActive) + actcond{j} .* tempprod * (vrest - simunits(par.channels(j).erev.units) * par.channels(j).erev.value);
 end
 
-nodes = par.channels(1).locationInActive; % where sodium channels are expressed
+nodes_act = par.channels(1).locationInActive; % where sodium channels are expressed
+nodes = reshape(bsxfun(@plus, (1:par.geo.nnodeseg)', (0:par.geo.nnode-1)*(par.geo.nnodeseg+par.geo.nintseg)), 1, []);
 
 % Leak conductances to balance the active channel currents.
 par.node.elec.pas.cond.value.vec = ...
-    -activesum(nodes) * fromsimunits(par.node.elec.pas.cond.units) ./ (vrest - simunits(par.elec.pas.erev.units)*par.elec.pas.erev.value.vec(nodes));
+    -activesum(nodes_act) * fromsimunits(par.node.elec.pas.cond.units) ./ (vrest - simunits(par.elec.pas.erev.units)*par.elec.pas.erev.value.vec(nodes));
 par.node.elec.pas.cond.value.ref = mode(par.node.elec.pas.cond.value.vec(:));
