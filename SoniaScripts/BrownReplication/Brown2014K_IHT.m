@@ -15,9 +15,9 @@ k.channame =                                'K+';
 k.chanfield =                               'k';
 k.issodium =                                false;
 
-k.cond.value =                              0.08;
+k.cond.value =                              0.015;
 k.cond.units =                              {2,' S','cm',[1 -2]};
-k.erev.value =                              -90;
+k.erev.value =                              -80;
 k.erev.units =                              {1, 'mV', 1};
 
 k.vrest.value =                             -72;%-82;

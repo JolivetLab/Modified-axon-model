@@ -12,21 +12,21 @@ par.sim.tmax.units =                                                    {1, 'ms'
 
 % Current stimulation
 % Stimulation amplitude.
-par.stim.amp.value =                                                    0.5;
+par.stim.amp.value =                                                    0.35;
 par.stim.amp.units =                                                    {1, 'nA', 'cm', [1, -2]};
 % Stimulation duration.
-par.stim.dur.value =                                                    10;
+par.stim.dur.value =                                                    2000;
 par.stim.dur.units =                                                    {1, 'us', 1};
 par.stim.location =                                                     1;
 
 % Number of nodes.
-par.geo.nnode =                                                         51;
+par.geo.nnode =                                                         7;
 % Number of internodes.
 par.geo.nintn =                                                         par.geo.nnode - 1;
 % Number of segments per node.
 par.geo.nnodeseg =                                                      1;
 % Number of segments per internode.
-par.geo.nintseg =                                                       52;
+par.geo.nintseg =                                                       20;
 % Total number of segments
 par.geo.totalNumberSegments =                                           par.geo.nnode*par.geo.nnodeseg + par.geo.nintn*par.geo.nintseg;
 
@@ -51,12 +51,12 @@ par.geo.internodeSegments = mat2cell( ...
 
 % Node geometry
 % Node diameter.
-par.node.geo.diam.value.ref =                                           0.5894;
+par.node.geo.diam.value.ref =                                           0.8;
 par.node.geo.diam.value.vec =                                           par.node.geo.diam.value.ref * ones(par.geo.nnode, 1);
 par.node.geo.diam.units =                                               {1, 'um', 1};
 
 % Node length.
-par.node.geo.length.value.ref =                                         0.8364;
+par.node.geo.length.value.ref =                                         1.3;
 par.node.geo.length.value.vec =                                         par.node.geo.length.value.ref * ones(par.geo.nnode, 1);
 par.node.geo.length.units =                                             {1, 'um', 1};
 
@@ -72,11 +72,11 @@ par.node.seg.geo.length.units =                                         {1, 'um'
 
 % Internode geometry
 % Internode axon diameter.
-par.intn.geo.diam.value.ref =                                           0.5894;
+par.intn.geo.diam.value.ref =                                           1.25;
 par.intn.geo.diam.value.vec =                                           par.intn.geo.diam.value.ref * ones(par.geo.nintn, 1);
 par.intn.geo.diam.units =                                               {1, 'um', 1};
 % Internode length.
-par.intn.geo.length.value.ref =                                         50.32;%48.32;
+par.intn.geo.length.value.ref =                                         17.94;%sum of 'axon'+'jpn'+'pn' specific lengths;
 par.intn.geo.length.value.vec =                                         par.intn.geo.length.value.ref * ones(par.geo.nintn, 1);
 par.intn.geo.length.units=                                              {1, 'um', 1};
 % Internode segment length.
@@ -101,7 +101,7 @@ par.elec.pas.vrest.units =                                              {1, 'mV'
 % par.node.elec.pas.leak.erev.units =                                     {1, 'mV', 1};
 
 % Node leak conductance - adjusted to set resting membrane potential.
-par.node.elec.pas.cond.value.ref =                                      0.3211; % same as Richardson - from correspondence -- don't actually know what it should be
+par.node.elec.pas.cond.value.ref =                                      0.2;
 par.node.elec.pas.cond.value.vec =                                      par.node.elec.pas.cond.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
 par.node.elec.pas.cond.units =                                          {2, 'mS', 'mm', [1, -2]};
 
@@ -117,7 +117,7 @@ par.node.elec.pas.axres.value.vec =                                     par.node
 par.node.elec.pas.axres.units =                                         {2, ' O', ' m', [1, 1]};
 
 % Node membrane capacitance.
-par.node.elec.pas.cap.value.ref =                                       0.9;
+par.node.elec.pas.cap.value.ref =                                       1;
 par.node.elec.pas.cap.value.vec =                                       par.node.elec.pas.cap.value.ref * ones(par.geo.nnode,par.geo.nnodeseg);
 par.node.elec.pas.cap.units =                                           {2, 'uF', 'cm', [1, -2]};
 
@@ -132,12 +132,12 @@ par.myel.elec.pas.cond.value.vec =                                      par.myel
 par.myel.elec.pas.cond.units =                                          {2, 'mS', 'cm', [1, -2]};
 
 % Internode axon membrane capacitance.
-par.intn.elec.pas.cap.value.ref =                                       0.9;
+par.intn.elec.pas.cap.value.ref =                                       0.0184;
 par.intn.elec.pas.cap.value.vec =                                       par.intn.elec.pas.cap.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.intn.elec.pas.cap.units =                                           {2, 'uF', 'cm', [1, -2]};
 
 % Internode axon membrane conductance.
-par.intn.elec.pas.cond.value.ref =                                      0.1;
+par.intn.elec.pas.cond.value.ref =                                      10.89;
 par.intn.elec.pas.cond.value.vec =                                      par.intn.elec.pas.cond.value.ref * ones(par.geo.nintn, par.geo.nintseg);
 par.intn.elec.pas.cond.units =                                          {2, 'mS', 'cm', [1, -2]}; 
 
@@ -157,7 +157,7 @@ par.myel.geo.peri.value.vec =                                           par.myel
 par.myel.geo.peri.units =                                               {1, 'nm', 1};
 
 % Myelin wrap periodicity.
-par.myel.geo.period.value =                                             16.2873;
+par.myel.geo.period.value =                                             23.7;
 par.myel.geo.period.units =                                             {1, 'nm', 1};
 
 % g-ratio (internode axon diameter to internode outer diameter ratio)
@@ -179,16 +179,14 @@ par =                                                                   Calculat
 
 % active electrical - introduced from correspondence
 
-par.channels(1) =                                   McIntyre2002FastNa_JPN;
-par.channels(2) =                                   McIntyre2002PersistentNa_JPN;
-par.channels(3) =                                   McIntyre2002SlowK_JPN;
-par.channels(4) =                                   McIntyre2002SlowK_JPN;
-% par.channels(4).cond.value = 0 * par.channels(4).cond.value;
+par.channels(1) =                                   Brown2014Na;
+par.channels(2) =                                   Brown2014K_IHT;
+par.channels(3) =                                   Brown2014K_ILT;
+% par.channels(3).cond.value = 0 * par.channels(4).cond.value;
 
 par.channels(1).location =                          [par.geo.nodeSegments{:}]';
 par.channels(2).location =                          [par.geo.nodeSegments{:}]';
-par.channels(3).location =                          [par.geo.nodeSegments{:}]';
-par.channels(4).location =                          [par.geo.internodeSegments{:}]';
+par.channels(3).location =                          [par.geo.internodeSegments{:}]';
 
 for i = 1 : length(par.channels)
     par.channels(i).cond.value =                    par.channels(i).cond.value * ones(size(par.channels(i).location));

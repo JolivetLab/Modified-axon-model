@@ -17,9 +17,9 @@ k.channame =                                'Fast Na+';
 k.chanfield =                               'nafast';
 k.issodium =                                true;
 
-k.cond.value =                              5;
+k.cond.value =                              0.05;
 k.cond.units =                              {2,' S','cm',[1 -2]};
-k.erev.value =                              60;
+k.erev.value =                              50;
 k.erev.units =                              {1, 'mV', 1};
 
 k.vrest.value =                             -72;%-82;
