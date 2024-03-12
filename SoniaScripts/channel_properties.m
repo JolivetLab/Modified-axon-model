@@ -2,11 +2,12 @@ clear all
 close all
 clc
 
-par = Cullen2018CortexAxonJPNlocalized_MTR;
+par = Cullen2018CortexAxonJPNlocalized_Kv12(0);
 nd= 15;
 
 par.sim.dt.value = 1;
 par.sim.tmax.value = 10;
+par.sim.temp = 20;
 [MEMBRANE_POTENTIAL, ~ , TIME_VECTOR] = ModelJPN_MTR(par);
 
 dt = unitsabs(par.sim.dt.units) * par.sim.dt.value;
@@ -50,56 +51,67 @@ xlabel('time (ms)')
 %% K+ gates specifically
 V = linspace(-100,100,length(TIME_VECTOR));
 
-i = 4; 
+i = 4;
 g4 = nan(length(V),2);
-a = nan(length(V), 1);
-b = nan(length(V), 1);
+inf = nan(length(V), 1);
+tau = nan(length(V), 1);
 
 
 for j=1:par.channels(i).gates.number
     for v=1:length(V)
-        a(v) = rateequation(V(v), par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.alpha.q10(j), par.channels(i).gates.alpha.equ{j});
-        b(v) = rateequation(V(v), par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.beta.equ{j});
-        g4(v,j)= a(v)/(a(v)+b(v));
+        inf(v) = rateequation(V(v), par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.alpha.q10(j), par.channels(i).gates.inf.equ{j});
+        tau(v) = rateequation(V(v), par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.tau.equ{j});
+        g4(v,j)= inf(v)/(inf(v)+tau(v));
     end
-    figure(2)
-    subplot(321)
-    hold on
-    plot(V,a,'LineWidth',1.5, 'DisplayName',par.channels(i).gates.label{j})
-    hold off
-    legend 
-    xlabel('mV')
-    title('alpha')
-    
+
+
     if j<2
         figure(2)
-        subplot(323)
-        plot(V,b,'LineWidth',1.5)
+        subplot(321)
+        hold on
+        plot(V,inf,'LineWidth',1.5, 'DisplayName',par.channels(i).gates.label{j})
+        hold off
+        legend
         xlabel('mV')
-        title('beta - l')
+        title('m_{inf}')
 
-        a1=a;
+        figure(2)
+        subplot(322)
+        plot(V,tau,'LineWidth',1.5)
+        xlabel('mV')
+        title('tau - m')
+
+        inf1=inf;
     else
         figure(2)
-        subplot(325)
-        plot(V,b, 'r','LineWidth',1.5)
+        subplot(323)
+        hold on
+        plot(V,inf,'LineWidth',1.5, 'DisplayName',par.channels(i).gates.label{j})
+        hold off
+        legend
         xlabel('mV')
-        title('beta - r')
+        title('h_{inf}')
+
+        figure(2)
+        subplot(324)
+        plot(V, tau,'LineWidth',1.5)
+        xlabel('mV')
+        title('tau - h')
     end
 
-    figure(2)
-    subplot(322)
-    hold on
-    plot(V, g4(:,j),'LineWidth', 1.5, 'DisplayName', par.channels(i).gates.label{j})
-    hold off
-    legend
-    xlabel('mV')
-    title('a/(a+b)')
+    % figure(2)
+    % subplot(326)
+    % hold on
+    % plot(V, g4(:,j),'LineWidth', 1.5, 'DisplayName', par.channels(i).gates.label{j})
+    % hold off
+    % legend
+    % xlabel('mV')
+    % title('n_{inf}/(tau+n_{inf})')
 end
 %
 figure(2)
-subplot(324)
-plot(V,a1.*a, 'LineWidth', 1.5)
+subplot(325)
+plot(V,inf1.*inf, 'LineWidth', 1.5)
 xlabel('mV')
-title('alpha(l)*alpha(r)')
+title('inf(m)*inf(h)')
 
