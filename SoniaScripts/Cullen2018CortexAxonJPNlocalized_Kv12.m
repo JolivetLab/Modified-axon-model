@@ -1,4 +1,4 @@
-function par = Cullen2018CortexAxonJPNlocalized_MTR(jpn_cond)
+function par = Cullen2018CortexAxonJPNlocalized_Kv12(jpn_cond)
 
 % Initialize all parameters.
 par =                                                                   GenerateEmptyParameterStructure();
@@ -200,7 +200,7 @@ par =                                                                   Calculat
 par.channels(1) =                                   McIntyre2002FastNa_JPN;
 par.channels(2) =                                   McIntyre2002PersistentNa_JPN;
 par.channels(3) =                                   McIntyre2002SlowK_JPN;
-par.channels(4) =                                   Kv11_JPN;
+par.channels(4) =                                   Kv12_JPN;
 if nargin >0
     par.channels(4).cond.value = jpn_cond;
 end
