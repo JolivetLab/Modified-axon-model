@@ -202,7 +202,8 @@ par.channels(2) =                                   McIntyre2002PersistentNa_JPN
 par.channels(3) =                                   McIntyre2002SlowK_JPN;
 par.channels(4) =                                   Kv11_JPN;
 par.channels(5) =                                   Kv12_JPN;
-if nargin >0
+
+if nargin > 0
     par.channels(4).cond.value = jpn_cond;
     par.channels(5).cond.value = jpn_cond;
 end
@@ -211,6 +212,8 @@ par.channels(1).location =                          [par.geo.nodeSegments{:}]';
 par.channels(2).location =                          [par.geo.nodeSegments{:}]';
 par.channels(3).location =                          [par.geo.nodeSegments{:}]';
 par.channels(4).location =                          [par.geo.juxtaparanodeSegments{:}]';
+par.channels(5).location =                          [par.geo.juxtaparanodeSegments{:}]';
+
 
 for i = 1 : length(par.channels)
     par.channels(i).cond.value =                    par.channels(i).cond.value * ones(size(par.channels(i).location));

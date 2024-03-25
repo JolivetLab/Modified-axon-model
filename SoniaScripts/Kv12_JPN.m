@@ -13,7 +13,7 @@ k.channame =                                'Kv1.2';
 k.chanfield =                               'k';
 k.issodium =                                false;
 
-k.cond.value =                              0.02; %
+k.cond.value =                              2.0; %
 k.cond.units =                              {2,' S','cm',[1 -2]};
 k.erev.value =                              -65;
 k.erev.units =                              {1, 'mV', 1};
