@@ -208,3 +208,6 @@ SoniaScripts/MTR_JPN_R2_Main/MTR2024_shortnode_21C.mat
 SoniaScripts/MTR_JPN_R2_Main/MTR2024_shortnode_37C.mat
 *.mat
 SoniaScripts/comparing_code.m
+*.png
+*.jpg
+*.pdf
