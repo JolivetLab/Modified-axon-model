@@ -1,7 +1,7 @@
 
 % Initiate directory for saving data.
 thisDirectory   = fileparts(mfilename('fullpath'));
-saveDirectory   = fullfile(thisDirectory,'MTR_JPN_R3.localiz_Main');
+saveDirectory   = fullfile(thisDirectory,'MTR_JPN_R4.Kv11_2.0S');
 if ~isdir(saveDirectory)
     mkdir(saveDirectory)
 end
@@ -40,10 +40,10 @@ for k = 1:2
     %% Run sham simulations.
     [MEMBRANE_POTENTIAL, INTERNODE_LENGTH, TIME_VECTOR] = ModelJPN_MTR(par, fullfile(saveDirectory, ['MTR2024_sham_' num2str(par.sim.temp) 'C.mat']));
     if k == 1
-        velocity.lotemp(1) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_lotemp(1) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
         subplot(331); plot(TIME_VECTOR,MEMBRANE_POTENTIAL,'-c');
     else
-        velocity.hitemp(1) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_hitemp(1) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
         subplot(334); plot(TIME_VECTOR,MEMBRANE_POTENTIAL,'-r');
     end
     % dlmwrite([saveDirectory '/time_vector_sham_' num2str(par.sim.temp) 'C.txt'],TIME_VECTOR);
@@ -97,11 +97,11 @@ for k = 1:2
         par                         = CalculateNumberOfMyelinLamellae(par, 'max');
         %         par                         = UpdateInternodePeriaxonalSpaceWidth(par, par.myel.geo.peri.value.ref/2, [], [1, 2, 51, 52], 'min');
         [MEMBRANE_POTENTIAL, INTERNODE_LENGTH, TIME_VECTOR] = ModelJPN_MTR(par, fullfile(saveDirectory, ['MTR2024_psw_' num2str(psw) '_' num2str(par.sim.temp) 'C.mat']));
-        velocity.psw(j,1)           = psw;
+        velocity_psw(j,1)           = psw;
         if k == 1
-            velocity.psw(j,2)       = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+            velocity_psw(j,2)       = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
         else
-            velocity.psw(j,3)       = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+            velocity_psw(j,3)       = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
         end
         j                           = j+1;
     end
@@ -120,9 +120,9 @@ for k = 1:2
     par =                                 CalculateLeakConductanceJPN_MTR(par);
     [MEMBRANE_POTENTIAL, INTERNODE_LENGTH, TIME_VECTOR] = ModelJPN_MTR(par, fullfile(saveDirectory, ['MTR2024_shortnode_' num2str(par.sim.temp) 'C.mat']));
     if k == 1
-        velocity.lotemp(2) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_lotemp(2) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     else
-        velocity.hitemp(2) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_hitemp(2) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     end
     refresh;
     
@@ -141,9 +141,9 @@ for k = 1:2
     %     par                                 = UpdateInternodePeriaxonalSpaceWidth(par, par.myel.geo.peri.value.ref/2, [], [1, 2, 51, 52], 'min');
     [MEMBRANE_POTENTIAL, INTERNODE_LENGTH, TIME_VECTOR] = ModelJPN_MTR(par, fullfile(saveDirectory, ['MTR2024_altmyelin_' num2str(par.sim.temp) 'C.mat']));
     if k == 1
-        velocity.lotemp(3) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_lotemp(3) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     else
-        velocity.hitemp(3) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_hitemp(3) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     end
     
     %% Run iTBS simulations.
@@ -154,32 +154,32 @@ for k = 1:2
     par =                                 CalculateLeakConductanceJPN_MTR(par);
     [MEMBRANE_POTENTIAL, INTERNODE_LENGTH, TIME_VECTOR] = ModelJPN_MTR(par, fullfile(saveDirectory, ['MTR2024_iTBS_' num2str(par.sim.temp) 'C.mat']));
     if k == 1
-        velocity.lotemp(4) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_lotemp(4) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     else
-        velocity.hitemp(4) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
+        velocity_hitemp(4) = velocities(MEMBRANE_POTENTIAL, INTERNODE_LENGTH, par.sim.dt.value*simunits(par.sim.dt.units), [20 40]);
     end
     
 end
 
 % Finish writing.
-% dlmwrite([saveDirectory '/psws.txt'],velocity.psw);
+% dlmwrite([saveDirectory '/psws.txt'],velocity_psw);
 
 % Finish plot.
 subplot(333); hold on;
-bar(velocity.lotemp,'c','EdgeColor','c');
+bar(velocity_lotemp,'c','EdgeColor','c');
 for i = 2:4
     plot(i,1.2,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.17
-    text(i,1.3,[num2str(100*(velocity.lotemp(i)/velocity.lotemp(1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',12); %1.185
+    text(i,1.3,[num2str(100*(velocity_lotemp(i)/velocity_lotemp(1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',12); %1.185
 end
 subplot(336); hold on;
-bar(velocity.hitemp,'r','EdgeColor','r');
+bar(velocity_hitemp,'r','EdgeColor','r');
 for i = 2:4
     plot(i,2.0,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.92
-    text(i,2.1,[num2str(100*(velocity.hitemp(i)/velocity.hitemp(1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',12); % 1.95
+    text(i,2.1,[num2str(100*(velocity_hitemp(i)/velocity_hitemp(1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',12); % 1.95
 end
 subplot(337);
-plot(velocity.psw(:,1),velocity.psw(:,2),'-c'), hold on
-plot(velocity.psw(:,1),velocity.psw(:,3),'-r');
+plot(velocity_psw(:,1),velocity_psw(:,2),'-c'), hold on
+plot(velocity_psw(:,1),velocity_psw(:,3),'-r');
 
 % Add basics.
 subplot(331); axis([0 5 -80 50]), xticks(0:5), xticklabels({'0','','','','','5'}), yticks(-80:40:40), yticklabels({'-80','','0',''}), xlabel('Time (ms)'), ylabel('Axon voltage (mV)');
@@ -194,14 +194,14 @@ hold on, plot([6.477 6.477],[0 4.5],'.-k'); set(gca,'Box','off');
 % Add last graph.
 Chosen_d = 1e-02;
 subplot(338);
-plot(velocity.psw(:,1),1e03*Chosen_d./velocity.psw(:,2),'-c'); hold on;
-plot(velocity.psw(:,1),1e03*Chosen_d./velocity.psw(:,3),'-r');
+plot(velocity_psw(:,1),1e03*Chosen_d./velocity_psw(:,2),'-c'); hold on;
+plot(velocity_psw(:,1),1e03*Chosen_d./velocity_psw(:,3),'-r');
 axis([0 20 0 15]);
 xticks(0:5:20), xticklabels({'0','5','10','15','20'}), xlabel('Periaxonal space width (nm)');
 yticks(0:5:15), yticklabels({'0','5','10','15'}), ylabel('Conduction delay over 1 cm (ms)');
 plot([6.477 6.477],[0 15],'.-k');
-text(10,13.5,['\Deltat_{0 - 20} = ~' num2str(1e03*Chosen_d./velocity.psw(end,2)-1e03*Chosen_d./velocity.psw(1,2),'%1.0f') ' ms/cm'],'Color','c');
-text(10,3, ['\Deltat_{0 - 20} = ~' num2str(1e03*Chosen_d./velocity.psw(end,3)-1e03*Chosen_d./velocity.psw(1,3),'%1.0f') ' ms/cm'],'Color','r');
+text(10,13.5,['\Deltat_{0 - 20} = ~' num2str(1e03*Chosen_d./velocity_psw(end,2)-1e03*Chosen_d./velocity_psw(1,2),'%1.0f') ' ms/cm'],'Color','c');
+text(10,3, ['\Deltat_{0 - 20} = ~' num2str(1e03*Chosen_d./velocity_psw(end,3)-1e03*Chosen_d./velocity_psw(1,3),'%1.0f') ' ms/cm'],'Color','r');
 
 % Finish insets.
 uistack(ax1,'top'); uistack(ax2,'top'); uistack(ax3,'top'); uistack(ax4,'top');
