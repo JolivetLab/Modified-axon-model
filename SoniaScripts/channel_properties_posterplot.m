@@ -2,18 +2,21 @@ clear all
 close all
 clc
 
+clr = ["#77AC30", "black", "red"];
+
 for c = 1:2
 
     if c == 1
         par = Cullen2018CortexAxonJPNlocalized_MTR(0);
-        par.sim.temp = 24;
+        % par.sim.temp = 24;
     else
         par = Cullen2018CortexAxonJPNlocalized_Kv12(0);
-        par.sim.temp = 20;
+        % par.sim.temp = 20;
     end
 
-    nd= 15;
+    nd = 3;
 
+    par.sim.temp = 37;
     par.sim.dt.value = 1;
     par.sim.tmax.value = 15;
     [MEMBRANE_POTENTIAL, ~ , TIME_VECTOR] = ModelJPN_MTR(par);
@@ -27,15 +30,16 @@ for c = 1:2
         figure(1)
         subplot(4,3,[1:2,4:5])
         hold on
-        plot(TIME_VECTOR,MEMBRANE_POTENTIAL(:,nd), 'k', 'LineWidth',1.5);
-        set(gca, 'XTick', []);
+        plot(TIME_VECTOR,MEMBRANE_POTENTIAL(:,nd),'color',[0 0.4470 0.7410], 'LineWidth',1.1);
+        % set(gca, 'XTick', []);
         ylabel('Axon Voltage (mV)')
         hold off
 
         V = MEMBRANE_POTENTIAL(:,nd);
         vrest = simunits(par.elec.pas.vrest.units)*par.elec.pas.vrest.value.ref;
         gates=cell(1,length(par.channels));
-
+        
+        par.sim.temp = 24;
         for i=3:length(par.channels)
             gates{i}=cell(1,par.channels(i).gates.number);
             for j=1:par.channels(i).gates.number
@@ -47,15 +51,21 @@ for c = 1:2
                 figure(1)
                 subplot(4,3,[7:8,10:11])
                 hold on
-                plot(TIME_VECTOR,gates{i}{j},'DisplayName', par.channels(i).channame, 'LineWidth', 1.5)
+                if j == 1
+                    plot(TIME_VECTOR,gates{i}{j}, 'Color', clr(i-2) ,'DisplayName', par.channels(i).channame, 'LineWidth', 1.1)
+                else
+                    plot(TIME_VECTOR,gates{i}{j},'--', 'Color',clr(i-2),'HandleVisibility','off', 'LineWidth', 1.1)
+                end
             end
         end
         hold off
         legend
         leg = legend('show'); % Just one output here
+        leg.Location = 'east';
         title(leg,'Channel')
         xlabel('Time (ms)'), ylabel('Gating Variable')
     else
+        par.sim.temp = 20;
         i=length(par.channels);
         gates{i}=cell(1,par.channels(i).gates.number);
         for j=1:par.channels(i).gates.number
@@ -67,7 +77,12 @@ for c = 1:2
             figure(1)
             subplot(4,3,[7:8,10:11])
             hold on
-            plot(TIME_VECTOR,gates{i}{j},'DisplayName', par.channels(i).channame, 'LineWidth', 1.5)
+            if j == 1
+                plot(TIME_VECTOR,gates{i}{j},'--r','HandleVisibility','off', 'LineWidth', 1.1)
+            else
+                plot(TIME_VECTOR,gates{i}{j},'r', 'DisplayName', par.channels(i).channame, 'LineWidth', 1.1)
+            end
+            
         end
     end
 
@@ -90,20 +105,20 @@ for c = 1:2
             figure(1)
             subplot(4,3,3)
             hold on
-            plot(V,inf,'DisplayName', par.channels(i).channame,'LineWidth',1.5)
+            plot(V,inf, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
-            set(gca, 'XTick', []);
-            leg = legend('show'); % Just one output here
-            leg.Location = 'southeast';
-            title(leg,'Channel')
+            % set(gca, 'XTick', []);
+            % leg = legend('show'); % Just one output here
+            % leg.Location = 'southeast';
+            % title(leg,'Channel')
             title('m_{inf}')
 
             figure(1)
             subplot(4,3,9)
             hold on
-            plot(V,tau,'LineWidth',1.5)
+            plot(V,tau, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
-            set(gca, 'XTick', []);
+            % set(gca, 'XTick', []);
             title('\tau_m')
 
             inf1=inf;
@@ -111,15 +126,15 @@ for c = 1:2
             figure(1)
             subplot(4,3,6)
             hold on
-            plot(V,inf,'LineWidth',1.5)
+            plot(V,inf, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
-            set(gca, 'XTick', []);
+            % set(gca, 'XTick', []);
             title('h_{inf}')
 
             figure(1)
             subplot(4,3,12)
             hold on
-            plot(V, tau,'LineWidth',1.5)
+            plot(V, tau, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
             xlabel('mV')
             title('\tau_h')
