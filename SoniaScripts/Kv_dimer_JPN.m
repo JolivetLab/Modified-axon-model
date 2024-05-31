@@ -9,7 +9,7 @@ function k = Kv_dimer_JPN
 k = createKineticStructure;
 
 k.scheme =                                  'HH';
-k.channame =                                'Kv1.1/Kv1.2';
+k.channame =                                'KvILT';
 k.chanfield =                               'k';
 k.issodium =                                false;
 

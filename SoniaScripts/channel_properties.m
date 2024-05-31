@@ -2,7 +2,7 @@ clear all
 close all
 clc
 
-par = Cullen2018CortexAxonJPNlocalized_Kv12(0);
+par = Cullen2018CortexAxonJPNlocalized_MTR(0);
 nd= 15;
 
 par.sim.dt.value = 1;
@@ -14,6 +14,8 @@ dt = unitsabs(par.sim.dt.units) * par.sim.dt.value;
 
 
 %% FIGURES (faster without the simulation above)
+par = Cullen2018CortexAxonJPNlocalized_KILT(0);
+
 figure(1)
 subplot(211)
 hold on
@@ -66,52 +68,52 @@ for j=1:par.channels(i).gates.number
 
 
     if j<2
-        figure(2)
+        figure(1)
         subplot(321)
         hold on
-        plot(V,inf,'LineWidth',1.5, 'DisplayName',par.channels(i).gates.label{j})
+        plot(V,inf, 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
         hold off
-        legend
-        xlabel('mV')
+        % set(gca, 'XTick', []);
+        % leg = legend('show'); % Just one output here
+        % leg.Location = 'southeast';
+        % title(leg,'Channel')
         title('m_{inf}')
-
-        figure(2)
-        subplot(322)
-        plot(V,tau,'LineWidth',1.5)
-        xlabel('mV')
-        title('tau - m')
-
         inf1=inf;
-    else
-        figure(2)
+
+        figure(1)
         subplot(323)
         hold on
-        plot(V,inf,'LineWidth',1.5, 'DisplayName',par.channels(i).gates.label{j})
+        plot(V,tau, 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
         hold off
-        legend
-        xlabel('mV')
+        % set(gca, 'XTick', []);
+        title('\tau_m (ms)')
+
+    else
+        figure(1)
+        subplot(322)
+        hold on
+        plot(V,inf, 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
+        hold off
+        % set(gca, 'XTick', []);
         title('h_{inf}')
 
-        figure(2)
-        subplot(324)
-        plot(V, tau,'LineWidth',1.5)
+        figure(1)
+        subplot(3,2,5:6)
+        hold on
+        plot(V,inf1.*inf, 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
         xlabel('mV')
-        title('tau - h')
+        title('m_{inf}*h_{inf}')
+        hold off
+
+        figure(1)
+        subplot(324)
+        hold on
+        plot(V, tau, 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
+        hold off
+        xlabel('mV')
+        title('\tau_h (ms)')
+        %
     end
 
-    % figure(2)
-    % subplot(326)
-    % hold on
-    % plot(V, g4(:,j),'LineWidth', 1.5, 'DisplayName', par.channels(i).gates.label{j})
-    % hold off
-    % legend
-    % xlabel('mV')
-    % title('n_{inf}/(tau+n_{inf})')
 end
-%
-figure(2)
-subplot(325)
-plot(V,inf1.*inf, 'LineWidth', 1.5)
-xlabel('mV')
-title('inf(m)*inf(h)')
 

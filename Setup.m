@@ -14,4 +14,4 @@ else
 end
 
 % Start up the GUI to show it's working.
-StartAxonGUI();
+% StartAxonGUI();

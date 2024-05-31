@@ -14,7 +14,7 @@ for c = 1:2
         % par.sim.temp = 20;
     end
 
-    nd = 3;
+    nd = 25;
 
     par.sim.temp = 37;
     par.sim.dt.value = 1;
@@ -22,9 +22,10 @@ for c = 1:2
     [MEMBRANE_POTENTIAL, ~ , TIME_VECTOR] = ModelJPN_MTR(par);
 
     dt = unitsabs(par.sim.dt.units) * par.sim.dt.value;
+    V = MEMBRANE_POTENTIAL(:,nd);
+    vrest = simunits(par.elec.pas.vrest.units)*par.elec.pas.vrest.value.ref;
 
-
-    %% FIGURES (faster without the simulation above)
+    %% FIGURES
     % par = Cullen2018CortexAxonJPNlocalized_dimer(0);
     if c == 1
         figure(1)
@@ -34,12 +35,9 @@ for c = 1:2
         % set(gca, 'XTick', []);
         ylabel('Axon Voltage (mV)')
         hold off
+        % gates=cell(1,length(par.channels));
 
-        V = MEMBRANE_POTENTIAL(:,nd);
-        vrest = simunits(par.elec.pas.vrest.units)*par.elec.pas.vrest.value.ref;
-        gates=cell(1,length(par.channels));
-        
-        par.sim.temp = 24;
+        % par.sim.temp = 24;
         for i=3:length(par.channels)
             gates{i}=cell(1,par.channels(i).gates.number);
             for j=1:par.channels(i).gates.number
@@ -65,7 +63,7 @@ for c = 1:2
         title(leg,'Channel')
         xlabel('Time (ms)'), ylabel('Gating Variable')
     else
-        par.sim.temp = 20;
+        % par.sim.temp = 20;
         i=length(par.channels);
         gates{i}=cell(1,par.channels(i).gates.number);
         for j=1:par.channels(i).gates.number
@@ -78,21 +76,27 @@ for c = 1:2
             subplot(4,3,[7:8,10:11])
             hold on
             if j == 1
-                plot(TIME_VECTOR,gates{i}{j},'--r','HandleVisibility','off', 'LineWidth', 1.1)
+                plot(TIME_VECTOR,gates{i}{j},'r','DisplayName', par.channels(i).channame,  1.1)
             else
-                plot(TIME_VECTOR,gates{i}{j},'r', 'DisplayName', par.channels(i).channame, 'LineWidth', 1.1)
+                plot(TIME_VECTOR,gates{i}{j},'--r', 'LineWidth','HandleVisibility','off', 'LineWidth', 1.1)
             end
-            
+
         end
     end
 
     % K+ gates specifically
     V = linspace(-100,100,length(TIME_VECTOR));
-    
+
     i = length(par.channels);
     g4 = nan(length(V),2);
     inf = nan(length(V), 1);
     tau = nan(length(V), 1);
+
+    if c == 1
+        par.sim.temp = 24;
+    else
+        par.sim.temp = 20;
+    end
 
     for j=1:par.channels(i).gates.number
         for v=1:length(V)
@@ -100,6 +104,7 @@ for c = 1:2
             tau(v) = rateequation(V(v), par.sim.temp, par.channels(i).gates.temp, par.channels(i).gates.beta.q10(j), par.channels(i).gates.tau.equ{j});
             g4(v,j)= inf(v)/(inf(v)+tau(v));
         end
+
 
         if j<2
             figure(1)
@@ -112,6 +117,7 @@ for c = 1:2
             % leg.Location = 'southeast';
             % title(leg,'Channel')
             title('m_{inf}')
+            inf1=inf;
 
             figure(1)
             subplot(4,3,9)
@@ -119,9 +125,8 @@ for c = 1:2
             plot(V,tau, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
             % set(gca, 'XTick', []);
-            title('\tau_m')
+            title('\tau_m (ms)')
 
-            inf1=inf;
         else
             figure(1)
             subplot(4,3,6)
@@ -131,20 +136,27 @@ for c = 1:2
             % set(gca, 'XTick', []);
             title('h_{inf}')
 
+            % figure(2)
+            % % subplot(325)
+            % hold on
+            % plot(V,inf1.*inf, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
+            % xlabel('mV')
+            % title('m_{inf}*h_{inf}')
+            % hold off
+
             figure(1)
             subplot(4,3,12)
             hold on
             plot(V, tau, clr(c+1), 'DisplayName', par.channels(i).channame,'LineWidth',1.1)
             hold off
             xlabel('mV')
-            title('\tau_h')
+            title('\tau_h (ms)')
+            %
         end
+
     end
+
+
 end
-%
-% figure(2)
-% % subplot(325)
-% plot(V,inf1.*inf, 'LineWidth', 1.5)
-% xlabel('mV')
-% title('inf(m)*inf(h)')
+
 

@@ -1,7 +1,7 @@
 
 % Initiate directory for saving data.
 thisDirectory   = fileparts(mfilename('fullpath'));
-saveDirectory   = fullfile(thisDirectory,'MTR_JPN_R4.Kv11_2.0S');
+saveDirectory   = fullfile(thisDirectory,'MTR_JPN_R4.Kv12_2.0S');
 if ~isdir(saveDirectory)
     mkdir(saveDirectory)
 end
@@ -29,7 +29,7 @@ for k = 1:2
     
     % Produce parameters for default cortex model.
     clear par;
-    par = Cullen2018CortexAxonJPNlocalized_MTR();
+    par = Cullen2018CortexAxonJPNlocalized_Kv12();
     par.sim.dt.value = 1;
     % Set temperature.
     par.sim.temp = temp(k);
@@ -85,7 +85,7 @@ for k = 1:2
    
     % Reset model and temperature.
     clear par;
-    par             = Cullen2018CortexAxonJPNlocalized_MTR();
+    par             = Cullen2018CortexAxonJPNlocalized_Kv12();
     par.sim.temp    = temp(k);
     par.sim.dt.value = 1;
     %% Run all simulations varying periaxonal space width.
@@ -109,7 +109,7 @@ for k = 1:2
     
     % Reset model and temperature.
     clear par;
-    par             = Cullen2018CortexAxonJPNlocalized_MTR();
+    par             = Cullen2018CortexAxonJPNlocalized_Kv12();
     par.sim.temp    = temp(k);
     par.sim.dt.value = 1;
     %% Run short node simulations.
@@ -128,7 +128,7 @@ for k = 1:2
     
     % Reset model and temperature.
     clear par;
-    par             = Cullen2018CortexAxonJPNlocalized_MTR();
+    par             = Cullen2018CortexAxonJPNlocalized_Kv12();
     par.sim.temp    = temp(k);
     par.sim.dt.value = 1;
     %% Run alt. myelin simulations.

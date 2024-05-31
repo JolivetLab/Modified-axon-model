@@ -115,8 +115,9 @@ save("velocity_psw_JPN_effect.mat", "velocity_psw")
 
 
 %% Plotting
-% velocity = load("velocity_JPN_effect.mat");
-% velocity_psw = load("velocity__psw_JPN_effect.mat")
+close all
+% velocity = load("velocity_JPN_effect.mat","velocity");
+% velocity_psw = load("velocity_psw_JPN_effect.mat","velocity_psw");
 % cond_vals = [0 0.02 3]; % S/cm2
 dif = nan(3,3,2);
 
@@ -128,59 +129,89 @@ for g = 2:length(cond_vals)
         dif(i,:,g-1) = 100*(velocity_g(i+1,:)./velocity_g(1,:)-1);
     end
 
-    if g == 2
-        subplot(2,2,1);
-        hold on
-        plot(velocity_psw(1,:,1),velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2),
-        plot(velocity_psw(g,:,1),velocity_psw(g,:,2),'-k', LineWidth=1.2), 
-        plot(velocity_psw(g,:,1),velocity_psw(g,:,3),'-r', LineWidth=1.2);
+    % if g == 2
+    % Chosen_d = 1e-02;
+    % subplot(2,2,1);
+    % hold on
+    % % plot(velocity_psw(1,:,1),velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2),
+    % % plot(velocity_psw(g,:,1),velocity_psw(g,:,2),'-k', LineWidth=1.2),
+    % % plot(velocity_psw(g,:,1),velocity_psw(g,:,3),'-r', LineWidth=1.2);
+    % plot(velocity_psw(1,:,1),1e03*Chosen_d./velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2)
+    % plot(velocity_psw(g,:,1),1e03*Chosen_d./velocity_psw(g,:,2),'-k''-k', LineWidth=1.2),
+    % plot(velocity_psw(g,:,1),1e03*Chosen_d./velocity_psw(g,:,3),'-r''-k', LineWidth=1.2);
 
-        % xlabel('psw (nm)'),
-        ylabel('CV(m/s)')
-        legend('no JPN','Kv1.1', 'Kv1.2')
-        title(['Conductance ' num2str(cond_vals(g)) ' S/cm^2'])
-        xline(6.477,'HandleVisibility','off', LineWidth=1.1)
+    % % xlabel('psw (nm)'),
+    % ylabel('CV(m/s)')
+    % legend('no JPN','Kv1.1', 'Kv1.2')
+    % title(['Conductance ' num2str(cond_vals(g)) ' S/cm^2'])
+    % xline(6.477,'HandleVisibility','off', LineWidth=1.1)
 
-        subplot(2,2,2);
-        hold on;
-        b = bar(velocity_g,'FaceColor','flat');
-        b(1).CData = [0 0.4470 0.7410];  
-        b(2).CData = [0 0 0];            
-        b(3).CData = [1 0 0];   
-        for i = 2:4
-            plot(i,1.95,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.17
-            text(i,2.1,[num2str(100*(velocity_g(i,1)./velocity_g(1,1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',8); %1.185
-        end
-        xticks(1:1:4.5), xticklabels({'Control','Short node','Alt. myelin','iTBS'}),
-        yticks(0:0.5:2.5)%, yticklabels({'','0.5''1','1.5'}),
-        ylabel('CV (m/s)');
-        ylim([0 2.3])
+    %     subplot(2,2,2);
+    %     hold on;
+    %     b = bar(velocity_g,'FaceColor','flat');
+    %     b(1).CData = [0 0.4470 0.7410];
+    %     b(2).CData = [0 0 0];
+    %     b(3).CData = [1 0 0];
+    %     for i = 2:4
+    %         plot(i,1.95,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.17
+    %         text(i,2.1,[num2str(100*(velocity_g(i,1)./velocity_g(1,1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',8); %1.185
+    %     end
+    %     xticks(1:1:4.5), xticklabels({'Control','Short node','Alt. myelin','iTBS'}),
+    %     yticks(0:0.5:2.5)%, yticklabels({'','0.5''1','1.5'}),
+    %     title(['Conductance ' num2str(cond_vals(g)) ' S/cm^2'])
+    %     ylabel('CV (m/s)');
+    %     ylim([0 2.3])
+    %
+    % else
+    figure(g)
+    Chosen_d = 1e-02;
+    subplot(2,3,1:2);
+    hold on
+    plot(velocity_psw(1,:,1),1e03*Chosen_d./velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2, DisplayName="no JPN")
+    plot(velocity_psw(g,:,1),1e03*Chosen_d./velocity_psw(g,:,2),'-k', LineWidth=1.2, DisplayName="Kv1.1"),
+    plot(velocity_psw(g,:,1),1e03*Chosen_d./velocity_psw(g,:,3),'-r', LineWidth=1.2, DisplayName="Kv1.2");
 
-    else
-        subplot(2,2,3);
-        hold on
-        plot(velocity_psw(1,:,1),velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2),
-        plot(velocity_psw(g,:,1),velocity_psw(g,:,2),'-k', LineWidth=1.2), 
-        plot(velocity_psw(g,:,1),velocity_psw(g,:,3),'-r', LineWidth=1.2);
+    % xlabel('psw (nm)'),
+    ylabel('Conduction delay over 1 cm (ms)')
+    leg = legend('show'); % Just one output here
+    leg.Location = 'southeast';
+    % title(['Conductance ' num2str(cond_vals(g)) ' S/cm^2'])
+    xline(6.477,'HandleVisibility','off', LineWidth=1.1)
 
-        xlabel('psw (nm)'), ylabel('CV(m/s)')
-        legend('no JPN','Kv1.1', 'Kv1.2')
-        title(['Conductance ' num2str(cond_vals(g)) ' S/cm^2'])
-        xline(6.477,'HandleVisibility','off', LineWidth=1.1)
+    figure(g)
+    subplot(2,3,4:5);
+    hold on
+    plot(velocity_psw(1,:,1),velocity_psw(1,:,3),'color',[0 0.4470 0.7410], LineWidth=1.2),
+    plot(velocity_psw(g,:,1),velocity_psw(g,:,2),'-k', LineWidth=1.2),
+    plot(velocity_psw(g,:,1),velocity_psw(g,:,3),'-r', LineWidth=1.2);
 
-        subplot(2,2,4);
-        hold on
-        b = bar(velocity_g,'FaceColor','flat');
-        b(1).CData = [0 0.4470 0.7410];  
-        b(2).CData = [0 0 0];            
-        b(3).CData = [1 0 0];   
-        for i = 2:4
-            plot(i,1.95,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.17
-            % text(i,2.1,[num2str(100*(velocity_g(i,1)./velocity_g(1,1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',8); %1.185
-        end
-        xticks(1:1:4.5), xticklabels({'Control','Short node','Alt. myelin','iTBS'}),
-        yticks(0:0.5:2.5)%, yticklabels({'','0.5''1','1.5'}),
-        ylabel('CV (m/s)');
-        ylim([0 2.3])
+    xlabel('psw (nm)'), ylabel('CV(m/s)')
+    % legend('no JPN','Kv1.1', 'Kv1.2')
+
+    xline(6.477,'HandleVisibility','off', LineWidth=1.1)
+
+    figure(g)
+    subplot(2,3,[3 6]);
+    hold on
+    b = bar(velocity_g,'FaceColor','flat');
+    b(1).CData = [0 0.4470 0.7410];
+    b(2).CData = [0 0 0];
+    b(3).CData = [1 0 0];
+    velocity_diff = nan(3,3);
+    for i = 2:4
+
+        velocity_diff(i-1,:) = 100*(velocity_g(i,:)./velocity_g(1,:)-1);
+        plot(i,1.95,'v','MarkerEdgeColor','k','MarkerFaceColor','k'); %1.17
+
+        text(i,2.16,[num2str(velocity_diff(i-1,1),'%1.1f') '%'],'Color',[0 0.4470 0.7410],'HorizontalAlignment','center','FontSize',8);
+        text(i,2.09,[num2str(velocity_diff(i-1,2),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',8);
+        text(i,2.02,[num2str(velocity_diff(i-1,3),'%1.1f') '%'],'Color','r','HorizontalAlignment','center','FontSize',8);
+
+        % text(i,2.1,[num2str(100*(velocity_g(i,1)./velocity_g(1,1)-1),'%1.1f') '%'],'Color','k','HorizontalAlignment','center','FontSize',8); %1.185
     end
+    xticks(1:1:4.5), xticklabels({'Control','Short node','Alt. myelin','iTBS'}),
+    yticks(0:0.5:2.5)%, yticklabels({'','0.5''1','1.5'}),
+    ylabel('CV (m/s)');
+    ylim([0 2.3])
+    % end
 end

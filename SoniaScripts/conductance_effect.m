@@ -101,8 +101,8 @@ for c = 1:size(config,1)
 end
 
 %%  --------------- CV EFFECT ----------------------
-cond_low = 0:0.01:0.07;
-cond_hi = 1.5:0.1:5;
+cond_low = 0:0.01:0.1;
+cond_hi = 0.1:0.1:5;
 cond_vals = [cond_low,cond_hi]; %S/cm2
 psw = 6.477; %, 0:5:20]; %nm !!! changing this will mess up plotting
 
@@ -139,7 +139,7 @@ for c = 1:2
     end
     % check = 1;
 end
-%%
+%
 figure(1)
 subplot(2,4,7:8)
 
