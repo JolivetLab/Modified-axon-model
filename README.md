@@ -1,6 +1,6 @@
 # Myelinated Axon Model
 
-Simulation of the myelinated axon (by Lee Cossell and David Attwell (https://www.ucl.ac.uk/biosciences/departments/npp/people/da)).
+Simulation of the myelinated axon by Lee Cossell and David Attwell. Includes adaptations to include Juxtaparanodes (for cortical axons) and their associated K+ channels as part of my Master's Thesis Research.
 
 ## Getting Started
 
@@ -21,16 +21,11 @@ Clone or copy the directory to any location. Add the directory to the MATLAB pat
 
 which will add the directory to the user's MATLAB path (after asking) and open the GUI.
 
-## Examples
+### JPN Modifications
 
-In order to replicate the values of [Arancibia-Carcamo et al. (2017)](https://elifesciences.org/articles/23329) run:
+The code necessary to run the simulations in the Master's Thesis is found in the "JPN_Implementation" folder. To reproduce the figures in the Thesis, check the code in the "Figures" subfolder
 
-```
->>Carcamo2017Cortex()  		% conduction velocity values for cortical axon
->>Carcamo2017OpticNerve() 	% conduction velocity values for optic nerve axon
-```
 
-which are in the Examples directory. There is more example code in that directory which will replicate other uses of the model (in [Bakiri et al. (2011)](http://onlinelibrary.wiley.com/doi/10.1113/jphysiol.2010.201376/abstract) and [Ford et al. (2015)](https://www.nature.com/articles/ncomms9073)). See the [Documentation](Documentation) for more details.
 
 ## Authors
 
@@ -38,13 +33,8 @@ which are in the Examples directory. There is more example code in that director
 	Sainsbury Wellcome Centre for Neural Circuits and Behaviour, University College London
 * David Attwell  
 	Department for Neurophysiology, Physiology and Pharmacology, University College London
+* Sonia Balan  
+	Systems Biology Master & Maastricht Centre for Systems Biology, Maastricht University
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Acknowledgements
-
-Funded by the Wellcome Trust
 
 
